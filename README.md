@@ -4,8 +4,8 @@ In this repository we are going to upload all data files and share all codes tha
 
 
 <b>Important dates</b>
+    the important date for us is <b> January 10 2019: Evaluation begins</b>
 
-    <h2>January 10 2019: Evaluation begins</h2>
     January 20 2019: Evaluation ends
     February 05 2019: Results are notified to participants
     February 28 2019: System and Task description paper submission due
