@@ -18,4 +18,16 @@ In this repository we are going to upload all data files and share all codes tha
     April 06 2019: Author notifications
     April 20 2019: Camera ready submissions due
     Summer 2019: SemEval 2019
+    
+   
+ <b> Resources </b>
+ Also we upload the papers or link of the websites that we think we can use during the development phase.
+
+ <b> Important Questions </b>
+    <li> What type of model(s) the participants used? </li>
+    What features were used?
+    Were there any classifier combination, if so how?
+    Were any external resources (unlabeled data, embeddings, dictionaries, ...) used?
+    Any other method/trick that seems unique and can be useful (even if it did not work for the participation reported).
+
 
