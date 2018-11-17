@@ -35,7 +35,7 @@
  <b> Notes </b>
  In this repository we are going to upload all data files and share all codes that we develope.</br> Also we upload the papers or  link of the websites that we think we can use during the development phase.
  
- <b>Usuful Links </b>
+ <b>Useful Links </b></br>
  <a href=https://hatebase.org > The world's largest structured repository of regionalized, multilingual hate speech  </a>
 
  
