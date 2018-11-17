@@ -24,10 +24,10 @@ In this repository we are going to upload all data files and share all codes tha
  Also we upload the papers or link of the websites that we think we can use during the development phase.
 
  <b> Important Questions </b>
-    <li> What type of model(s) the participants used? </li>
-    <li> What features were used? </li>
-    <li> Were there any classifier combination, if so how? </li>
-    <li> Were any external resources (unlabeled data, embeddings, dictionaries, ...) used?</li>
-    <li> Any other method/trick that seems unique and can be useful (even if it did not work for the participation reported).</li>
+    <li> What type of model(s) weare using? </li>
+    <li> What features we are using? </li>
+    <li> Are there any classifier combination, if so how? </li>
+    <li> Are any external resources (unlabeled data, embeddings, dictionaries, ...) using?</li>
+    <li> Any unique method/trick?</li>
 
 
