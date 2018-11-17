@@ -25,8 +25,8 @@
     Summer 2019: SemEval 2019
     
  <b> Important Questions </b>
-    <li> What type of model(s) weare using? </li>
-    <li> What features we are using? </li>
+    <li> What type of model(s) are we using? </li>
+    <li> What features are we using? </li>
     <li> Are there any classifier combination, if so how? </li>
     <li> Are any external resources (unlabeled data, embeddings, dictionaries, ...) using?</li>
     <li> Any unique method/trick?</li>  
