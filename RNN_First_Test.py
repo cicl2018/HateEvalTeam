@@ -23,6 +23,9 @@ def get_data(file, padding='post'):
             list_of_sentences.append(row[1])
             list_of_hateful.append(row[2])
 
+    list_of_sentences.pop(0)
+    list_of_hateful.pop(0)
+
     for x in list_of_sentences:
         max_length.append(len(x))
     longest_sent = max(max_length)
@@ -48,18 +51,24 @@ def get_data(file, padding='post'):
     test_y = list_of_hateful[500:]
 
     train_x = pad_sequences(train_x, padding=padding, value=0, maxlen=longest_sent, truncating='pre')
-    test_x = pad_sequences(train_x, padding=padding, value=0, maxlen=longest_sent, truncating='pre')
+    test_x = pad_sequences(test_x, padding=padding, value=0, maxlen=longest_sent, truncating='pre')
 
-    print(type(list_of_hateful[2]))
-    print(train_x[1], train_y[1])
-    print(train_y[0], train_y[-1])
-    print(len(train_y),len(test_y))
+    #print(train_x[1], train_y[1])
+    #print(len(train_x[-1]), len(test_x[0]))
+    #print(len(train_y),len(test_y))
+
+    print(len(list_of_sentences[1]), len(list_of_sentences[2]), len(list_of_sentences[3]))
+    print((len(train_words[1])), len((train_words[2])), len((train_words[3])))
+    print(len(train_x[1]), len(train_x[2]), len(train_x[3]))
+    #print(train_x[1], test_x[1])
+    #print(len(train_x[1]), len(test_x[1]))
+    #print(len(train_x), len(test_x))
     return train_x, train_y, test_x, test_y
 
 def recurrent_networks():
     train_x, train_y, test_x, test_y = get_data(file='C:\\Users\\mihai\\PycharmProjects\\SharedTaskHS\\HateEvalTeam\\Data Files\\Data Files\\#2 Development-English-A\\dev_en.tsv', padding='post')
     epoch = 1
-    dropout = 0.5
+    dropout = 0.1
 
     #print(type(train_x),type(train_y),type(test_x),type(test_y))
     #train_x = np.array(train_x)
@@ -75,10 +84,16 @@ def recurrent_networks():
     recurrent_model.add(GRU(units=256, activation='relu'))
     recurrent_model.add(Dense(units=1, activation='sigmoid'))
     recurrent_model.compile(optimizer='adam', loss='binary_crossentropy', metrics=['accuracy'])
-    recurrent_model.fit(train_x, train_y, epochs=epoch, batch_size=32)
+    recurrent_model.fit(train_x, train_y, epochs=epoch)
 
     score = recurrent_model.evaluate(test_x, test_y)
     print(score)
+
+    y_test_pred = recurrent_model.predict(test_x)
+    prec = precision_score(test_y, y_test_pred.round(), average='macro')
+    rec = recall_score(test_y, y_test_pred.round(), average='macro')
+    f1 = f1_score(test_y, y_test_pred.round(), average='macro')
+    print("Precision:", prec, "\n Recall:", rec, "\n F1-score:", f1)
 
 #get_data(file='C:\\Users\\mihai\\PycharmProjects\\SharedTaskHS\\HateEvalTeam\\Data Files\\Data Files\\#2 Development-English-A\\dev_en.tsv')
 recurrent_networks()
