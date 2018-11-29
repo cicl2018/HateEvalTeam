@@ -1,4 +1,3 @@
-import gzip
 import csv
 import numpy as np
 from keras import regularizers
@@ -9,8 +8,9 @@ from sklearn.metrics import f1_score, precision_score, recall_score
 from sklearn.preprocessing import OneHotEncoder
 import keras_metrics
 
+
 def get_data(file, padding='post'):
-    #file = 'C:\\Users\\mihai\\PycharmProjects\\SharedTaskHS\\HateEvalTeam\\Data Files\\Data Files\\#1 Practice\\trial_en.tsv'
+    # file = 'C:\\Users\\mihai\\PycharmProjects\\SharedTaskHS\\HateEvalTeam\\Data Files\\Data Files\\#1 Practice\\trial_en.tsv'
 
     list_of_sentences = list()
     list_of_hateful = list()
@@ -34,52 +34,60 @@ def get_data(file, padding='post'):
     train_words = []
 
     for sent in list_of_sentences:
-        word = []
+        words = []
         for char in sent:
             if char in alphabet:
-                word.append(alphabet[char])
+                words.append(alphabet[char])
             else:
                 alphabet[char] = len(alphabet) + 1
-                word.append(alphabet[char])
-            train_words.append(word)
+                words.append(alphabet[char])
+
+        train_words.append(words)
 
     train_x = train_words[:500]
     test_x = train_words[500:]
 
     list_of_hateful = list(map(int, list_of_hateful[1:]))
     train_y = list_of_hateful[:500]
-    test_y = list_of_hateful[500:]
+    test_y = list_of_hateful[499:]
 
     train_x = pad_sequences(train_x, padding=padding, value=0, maxlen=longest_sent, truncating='pre')
     test_x = pad_sequences(test_x, padding=padding, value=0, maxlen=longest_sent, truncating='pre')
 
-    #print(train_x[1], train_y[1])
-    #print(len(train_x[-1]), len(test_x[0]))
-    #print(len(train_y),len(test_y))
+    # print(train_x[1], train_y[1])
+    # print(len(train_x[-1]), len(test_x[0]))
+    # print(len(train_y),len(test_y))
+
 
     print(len(list_of_sentences[1]), len(list_of_sentences[2]), len(list_of_sentences[3]))
     print((len(train_words[1])), len((train_words[2])), len((train_words[3])))
     print(len(train_x[1]), len(train_x[2]), len(train_x[3]))
-    #print(train_x[1], test_x[1])
-    #print(len(train_x[1]), len(test_x[1]))
-    #print(len(train_x), len(test_x))
+
+    # print(train_x[1], test_x[1])
+    # print(len(train_x[1]), len(test_x[1]))
+    # print(len(train_x), len(test_x))
     return train_x, train_y, test_x, test_y
 
+
 def recurrent_networks():
-    train_x, train_y, test_x, test_y = get_data(file='C:\\Users\\mihai\\PycharmProjects\\SharedTaskHS\\HateEvalTeam\\Data Files\\Data Files\\#2 Development-English-A\\dev_en.tsv', padding='post')
+    train_x, train_y, test_x, test_y = get_data(
+        file='C:\\Users\\mihai\\PycharmProjects\\SharedTaskHS\\HateEvalTeam\\Data Files\\Data Files\\#2 Development-English-A\\dev_en.tsv',
+        padding='post')
     epoch = 1
     dropout = 0.1
 
-    #print(type(train_x),type(train_y),type(test_x),type(test_y))
-    #train_x = np.array(train_x)
-    train_y = np.array(train_y)
-    #test_x = np.array(test_x)
-    test_y = np.array(test_y)
+    # print(type(train_x),type(train_y),type(test_x),type(test_y))
+    train_x = np.asarray(train_x)
+    train_y = np.asarray(train_y)
+    test_x = np.asarray(test_x)
+    test_y = np.asarray(test_y)
 
-    #print(type(train_x), type(train_y), type(test_x), type(test_y))
+    print(test_x.shape, test_y.shape)
+
+    # print(type(train_x), type(train_y), type(test_x), type(test_y))
 
     recurrent_model = Sequential()
-    recurrent_model.add(Embedding(input_dim=128, output_dim=128))
+    recurrent_model.add(Embedding(input_dim=train_x.shape[0], output_dim=128))
     recurrent_model.add(Dropout(dropout))
     recurrent_model.add(GRU(units=256, activation='relu'))
     recurrent_model.add(Dense(units=1, activation='sigmoid'))
@@ -95,5 +103,6 @@ def recurrent_networks():
     f1 = f1_score(test_y, y_test_pred.round(), average='macro')
     print("Precision:", prec, "\n Recall:", rec, "\n F1-score:", f1)
 
-#get_data(file='C:\\Users\\mihai\\PycharmProjects\\SharedTaskHS\\HateEvalTeam\\Data Files\\Data Files\\#2 Development-English-A\\dev_en.tsv')
+
+# get_data(file='C:\\Users\\mihai\\PycharmProjects\\SharedTaskHS\\HateEvalTeam\\Data Files\\Data Files\\#2 Development-English-A\\dev_en.tsv')
 recurrent_networks()
