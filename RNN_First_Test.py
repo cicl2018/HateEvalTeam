@@ -1,7 +1,7 @@
 import csv
 import numpy as np
 from keras import regularizers
-from keras.layers import Dense, Dropout, Embedding, GRU
+from keras.layers import Dense, Dropout, Embedding, GRU, SimpleRNN, RNN
 from keras.models import Sequential
 from keras_preprocessing.sequence import pad_sequences
 from sklearn.metrics import f1_score, precision_score, recall_score
@@ -73,23 +73,28 @@ def recurrent_networks():
     train_x, train_y, test_x, test_y = get_data(
         file='C:\\Users\\mihai\\PycharmProjects\\SharedTaskHS\\HateEvalTeam\\Data Files\\Data Files\\#2 Development-English-A\\dev_en.tsv',
         padding='post')
-    epoch = 1
+    epoch = 10
     dropout = 0.1
 
     # print(type(train_x),type(train_y),type(test_x),type(test_y))
     train_x = np.asarray(train_x)
+    train_x = train_x[:, :, np.newaxis]
     train_y = np.asarray(train_y)
     test_x = np.asarray(test_x)
+    test_x = test_x[:, :, np.newaxis]
     test_y = np.asarray(test_y)
 
-    print(test_x.shape, test_y.shape)
+    print(train_x.shape, train_y.shape)
+
 
     # print(type(train_x), type(train_y), type(test_x), type(test_y))
 
     recurrent_model = Sequential()
-    recurrent_model.add(Embedding(input_dim=train_x.shape[0], output_dim=128))
-    recurrent_model.add(Dropout(dropout))
-    recurrent_model.add(GRU(units=256, activation='relu'))
+    #recurrent_model.add(Embedding(input_dim=train_x.shape[1], output_dim=train_x.shape[1]))
+    #recurrent_model.add(Dropout(dropout))
+    #recurrent_model.add()
+    recurrent_model.add(GRU(units=128, activation='relu', kernel_regularizer=regularizers.l2(0.01)))
+    recurrent_model.add(Dropout(0.2))
     recurrent_model.add(Dense(units=1, activation='sigmoid'))
     recurrent_model.compile(optimizer='adam', loss='binary_crossentropy', metrics=['accuracy'])
     recurrent_model.fit(train_x, train_y, epochs=epoch)
