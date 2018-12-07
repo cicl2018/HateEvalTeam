@@ -6,6 +6,7 @@ from keras.models import Sequential
 from keras_preprocessing.sequence import pad_sequences
 from sklearn.metrics import f1_score, precision_score, recall_score
 
+
 def get_data(train_file, test_file, padding='post'):
     list_of_sentences_train = list()
     list_of_hateful_train = list()
@@ -13,7 +14,7 @@ def get_data(train_file, test_file, padding='post'):
 
     ### Train file ###
     with open(train_file, encoding="utf8") as cur_train_file:
-        reader = csv. reader(cur_train_file, delimiter='\t')
+        reader = csv.reader(cur_train_file, delimiter='\t')
         for row in reader:
             list_of_sentences_train.append(row[1])
             list_of_hateful_train.append(row[2])
@@ -77,15 +78,18 @@ def get_data(train_file, test_file, padding='post'):
 
         test_x = pad_sequences(test_x, padding=padding, value=0, maxlen=longest_sent, truncating='post')
 
-        print(len(train_x), len(train_y), len(test_x),len(test_y))
+        print(len(train_x), len(train_y), len(test_x), len(test_y))
 
         return train_x, train_y, test_x, test_y
 
 
 def recurrent_network():
-    train_x, train_y, test_x, test_y = get_data(train_file='C:\\Users\\mihai\\PycharmProjects\\SharedTaskHS\\HateEvalTeam\\Data Files\\Data Files\\#2 Development-English-A\\train_en.tsv',
-         test_file='C:\\Users\\mihai\\PycharmProjects\\SharedTaskHS\\HateEvalTeam\\Data Files\\Data Files\\#2 Development-English-A\\dev_en.tsv',
-         padding='post')
+    train_x, train_y, test_x, test_y = get_data(
+        train_file='C:\\Users\\mihai\\PycharmProjects\\SharedTaskHS\\HateEvalTeam\\Data Files\\Data Files\\#2 '
+                   'Development-English-A\\train_en.tsv',
+        test_file='C:\\Users\\mihai\\PycharmProjects\\SharedTaskHS\\HateEvalTeam\\Data Files\\Data Files\\#2 '
+                  'Development-English-A\\dev_en.tsv',
+        padding='post')
 
     train_x = np.asarray(train_x)
     train_x = train_x[:, :, np.newaxis]
@@ -102,26 +106,20 @@ def recurrent_network():
     recurrent_model.add(Flatten())
     recurrent_model.add(Dense(units=1, activation='sigmoid'))
     recurrent_model.compile(optimizer='adam', loss='binary_crossentropy', metrics=['accuracy'])
-    recurrent_model.fit(train_x, train_y, epochs=10)
+    recurrent_model.fit(train_x, train_y, epochs=30)
 
     score = recurrent_model.evaluate(test_x, test_y)
-    print('Accuracy:', score)
+    print('Accuracy:', score[1])
 
     y_test_pred = recurrent_model.predict(test_x)
+    prec = precision_score(test_y, y_test_pred.round(), average='macro')
+    rec = recall_score(test_y, y_test_pred.round(), average='macro')
     f1 = f1_score(test_y, y_test_pred.round(), average='macro')
-    print('F1:', f1)
+    print("Precision:", prec, "\n Recall:", rec, "\n F1-score:", f1)
 
 
 recurrent_network()
 
-
-
-
-
-
-
-
-
-#get_data(train_file='C:\\Users\\mihai\\PycharmProjects\\SharedTaskHS\\HateEvalTeam\\Data Files\\Data Files\\#2 Development-English-A\\train_en.tsv',
+# get_data(train_file='C:\\Users\\mihai\\PycharmProjects\\SharedTaskHS\\HateEvalTeam\\Data Files\\Data Files\\#2 Development-English-A\\train_en.tsv',
 #         test_file='C:\\Users\\mihai\\PycharmProjects\\SharedTaskHS\\HateEvalTeam\\Data Files\\Data Files\\#2 Development-English-A\\dev_en.tsv',
- #        padding='post')
+#        padding='post')
