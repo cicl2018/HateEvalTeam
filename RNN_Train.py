@@ -85,10 +85,8 @@ def get_data(train_file, test_file, padding='post'):
 
 def recurrent_network():
     train_x, train_y, test_x, test_y = get_data(
-        train_file='C:\\Users\\mihai\\PycharmProjects\\SharedTaskHS\\HateEvalTeam\\Data Files\\Data Files\\#2 '
-                   'Development-English-A\\train_en.tsv',
-        test_file='C:\\Users\\mihai\\PycharmProjects\\SharedTaskHS\\HateEvalTeam\\Data Files\\Data Files\\#2 '
-                  'Development-English-A\\dev_en.tsv',
+        train_file='C:\\Users\\Denise\\Documents\\Studium\\WS 1819\\Vhallenges WS1819\HateEvalTeam\\Data Files\\Data Files\\#2 Development-English-A\\train_en.tsv',
+        test_file='C:\\Users\\Denise\\Documents\\Studium\\WS 1819\\Vhallenges WS1819\HateEvalTeam\\Data Files\\Data Files\\#2 Development-English-A\\dev_en.tsv',
         padding='post')
 
     train_x = np.asarray(train_x)
