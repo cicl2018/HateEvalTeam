@@ -4,7 +4,7 @@ from keras import regularizers
 from keras.layers import Dense, Dropout, Embedding, GRU, SimpleRNN, RNN, LSTM, Flatten, Activation
 from keras.models import Sequential
 from keras_preprocessing.sequence import pad_sequences
-from sklearn.metrics import f1_score, precision_score, recall_score
+from sklearn.metrics import f1_score, precision_score, recall_score, precision_recall_fscore_support
 
 
 def get_data(train_file, test_file, padding='post'):
@@ -85,16 +85,22 @@ def get_data(train_file, test_file, padding='post'):
 
 def recurrent_network():
     train_x, train_y, test_x, test_y = get_data(
-        train_file='C:\\Users\\Denise\\Documents\\Studium\\WS 1819\\Vhallenges WS1819\HateEvalTeam\\Data Files\\Data Files\\#2 Development-English-A\\train_en.tsv',
-        test_file='C:\\Users\\Denise\\Documents\\Studium\\WS 1819\\Vhallenges WS1819\HateEvalTeam\\Data Files\\Data Files\\#2 Development-English-A\\dev_en.tsv',
+        train_file='C:\\Users\\mihai\\PycharmProjects\\SharedTaskHS\\HateEvalTeam\\Data Files\\Data Files\\#2 Development-English-A\\train_en.tsv',
+        test_file='C:\\Users\\mihai\\PycharmProjects\\SharedTaskHS\\HateEvalTeam\\Data Files\\Data Files\\#2 Development-English-A\\dev_en.tsv',
         padding='post')
 
     train_x = np.asarray(train_x)
     train_x = train_x[:, :, np.newaxis]
+
     train_y = np.asarray(train_y)
+    train_y = np.reshape(train_y, (-1, 1))
+
     test_x = np.asarray(test_x)
     test_x = test_x[:, :, np.newaxis]
+
     test_y = np.asarray(test_y)
+    test_y = np.reshape(test_y, (-1, 1))
+
 
     recurrent_model = Sequential()
     #recurrent_model.add(Embedding(input_dim=train_x.shape[1], output_dim=train_x.shape[1], input_shape=(327,),  mask_zero=False))
@@ -111,12 +117,18 @@ def recurrent_network():
     print('Accuracy:', score[1])
 
     y_test_pred = recurrent_model.predict(test_x)
-    print(type(y_test_pred))
-    print(y_test_pred)
 
-    prec = precision_score(test_y, y_test_pred, average='macro')
-    rec = recall_score(test_y, y_test_pred, average='macro')
-    f1 = f1_score(test_y, y_test_pred, average='macro')
+    test_y_new = []
+    for x in test_y:
+        x_new = float(x)
+        x_new = np.asarray(x_new)
+        test_y_new.append(x_new)
+
+
+    prec = precision_score(test_y_new, y_test_pred.round(), average='macro')
+    rec = recall_score(test_y_new, y_test_pred.round(), average='macro')
+    f1 = f1_score(test_y_new, y_test_pred.round(), average='macro')
+
     print("Precision:", prec, "\n Recall:", rec, "\n F1-score:", f1)
 
 

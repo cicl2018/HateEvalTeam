@@ -73,9 +73,10 @@ def get_data(file, padding='post'):
 
 def recurrent_networks():
     train_x, train_y, test_x, test_y = get_data(
-        file='C:\\Users\\Denise\\Documents\\Studium\WS 1819\\Vhallenges WS1819\\HateEvalTeam\\Data Files\\Data Files\\#2 Development-Spanish-A\\dev_es.tsv',
+        file='C:\\Users\\mihai\\PycharmProjects\\SharedTaskHS\\HateEvalTeam\\Data Files\\Data Files\\#2 '
+             'Development-English-A\\dev_en.tsv',
         padding='post')
-    epoch = 10
+    # epoch = 10
     # dropout = 0.1
 
     # print(type(train_x),type(train_y),type(test_x),type(test_y))
@@ -87,18 +88,13 @@ def recurrent_networks():
     test_y = np.asarray(test_y)
 
     ##### EPOCHS & DROPOUT #####
-<<<<<<< HEAD
     epochs = list(range(1, 8))
     dropout = [0.1, 0.2]
-=======
-    epochs = list(range(1, 11))
-    dropout =  0.2
->>>>>>> e1d1695c2c146e2217406f49aa656c2e04ce916b
 
     # print(train_x.shape, train_y.shape)
     with open('results_LSTM.txt', 'w') as result_file:
+        for dp in dropout:
             recurrent_model = Sequential()
-<<<<<<< HEAD
             #recurrent_model.add(Embedding(input_dim=train_x.shape[1], output_dim=train_x.shape[1], input_shape=(851,)))
             # recurrent_model.add(Dropout(dropout))
             # recurrent_model.add()
@@ -108,16 +104,9 @@ def recurrent_networks():
             recurrent_model.add(LSTM(units=64, activation='tanh', return_sequences=True))
             #recurrent_model.add(LSTM(units=64, activation='tanh', return_sequences=True))
             recurrent_model.add(Dropout(dp))
-=======
-            recurrent_model.add(LSTM(units=64, return_sequences=True))
-            recurrent_model.add(LSTM(units=64, return_sequences=True))
-            recurrent_model.add(Dropout(0.2))
-            recurrent_model.add(Activation('tanh'))
->>>>>>> e1d1695c2c146e2217406f49aa656c2e04ce916b
             recurrent_model.add(Flatten())
             recurrent_model.add(Dense(units=1, activation='sigmoid'))
             recurrent_model.compile(optimizer='adam', loss='binary_crossentropy', metrics=['accuracy'])
-            #recurrent_model.fit(train_x, train_y, epochs=epoch)
 
             for epoch in epochs:
                 recurrent_model.fit(train_x, train_y, epochs=epoch)
@@ -128,20 +117,12 @@ def recurrent_networks():
                 rec = recall_score(test_y, y_test_pred.round(), average='macro')
                 f1 = f1_score(test_y, y_test_pred.round(), average='macro')
 
-<<<<<<< HEAD
                 print("Dropout:", dp, "Epoch:", epoch, "F1:", f1)
                 result_file.write("Dropout: " + str(dp) + ' --- ' + 'Epoch: ' + str(epoch) + ' --- ' + 'F1: ' + str(
                     f1) + " --- " + 'Precision:' + str(prec) + '\n')
-=======
-                print("Dropout:", "Epoch:", epoch, "F1:", f1)
-                result_file.write("Dropout: " + ' --- ' + 'Epoch: ' + str(epoch) + ' --- ' + 'F1: ' + str(
-                    f1) + " --- " + 'Score: ' + str(score[1]) + '\n')
->>>>>>> e1d1695c2c146e2217406f49aa656c2e04ce916b
 
-    print("Precision:", prec, "\n Recall:", rec, "\n F1-score:", f1)
+    # print("Precision:", prec, "\n Recall:", rec, "\n F1-score:", f1)
     result_file.close()
-
-<<<<<<< HEAD
 
 
 time_1 = time.asctime(time.localtime(time.time()))
@@ -316,7 +297,7 @@ def recurrent_networks_5():
         recurrent_model.add(Flatten())
         recurrent_model.add(Dense(units=1, activation='sigmoid'))
         recurrent_model.compile(optimizer='adam', loss='binary_crossentropy', metrics=['accuracy'])
-        recurrent_model.fit(train_x[train], train_y[train], epochs=5, batch_size=10)
+        recurrent_model.fit(train_x[train], train_y[train], epochs=5)
 
         scores = recurrent_model.evaluate(test_x, test_y)
         print("%s: %.2f%%" % (recurrent_model.metrics_names[1], scores[1] * 100))
@@ -328,7 +309,7 @@ def recurrent_networks_5():
     rec = recall_score(test_y, y_test_pred.round(), average='macro')
     f1 = f1_score(test_y, y_test_pred.round(), average='macro')
 
-    print("F1:", f1, "Precision:", prec)
+    print("Precision:", prec, "\n Recall:", rec, "\n F1-score:", f1)
 
 
 
@@ -341,6 +322,3 @@ recurrent_networks_5()
 
 time_2 = time.asctime(time.localtime(time.time()))
 print(time_1 + '\n' + time_2)
-=======
-recurrent_networks()
->>>>>>> e1d1695c2c146e2217406f49aa656c2e04ce916b
