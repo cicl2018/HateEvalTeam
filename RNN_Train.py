@@ -114,9 +114,9 @@ def recurrent_network():
     print(type(y_test_pred))
     print(y_test_pred)
 
-    prec = precision_score(test_y, y_test_pred, average='macro')
-    rec = recall_score(test_y, y_test_pred, average='macro')
-    f1 = f1_score(test_y, y_test_pred, average='macro')
+    prec = precision_score(test_y, y_test_pred.round(), average='macro')
+    rec = recall_score(test_y, y_test_pred.round(), average='macro')
+    f1 = f1_score(test_y, y_test_pred.round(), average='macro')
     print("Precision:", prec, "\n Recall:", rec, "\n F1-score:", f1)
 
 
