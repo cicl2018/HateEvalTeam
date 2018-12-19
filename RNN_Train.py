@@ -99,22 +99,26 @@ def recurrent_network():
     test_y = np.asarray(test_y)
 
     recurrent_model = Sequential()
-    recurrent_model.add(LSTM(units=64, return_sequences=True))
-    recurrent_model.add(LSTM(units=64, return_sequences=True))
+    #recurrent_model.add(Embedding(input_dim=train_x.shape[1], output_dim=train_x.shape[1], input_shape=(327,),  mask_zero=False))
+    recurrent_model.add(LSTM(units=64, return_sequences=True, dropout=0.1))
+    recurrent_model.add(LSTM(units=64, return_sequences=True, dropout=0.1))
     recurrent_model.add(Dropout(0.2))
-    recurrent_model.add(Activation('tanh'))
+    #recurrent_model.add(Activation('tanh'))
     recurrent_model.add(Flatten())
     recurrent_model.add(Dense(units=1, activation='sigmoid'))
     recurrent_model.compile(optimizer='adam', loss='binary_crossentropy', metrics=['accuracy'])
-    recurrent_model.fit(train_x, train_y, epochs=30)
+    recurrent_model.fit(train_x, train_y, epochs=1)
 
     score = recurrent_model.evaluate(test_x, test_y)
     print('Accuracy:', score[1])
 
     y_test_pred = recurrent_model.predict(test_x)
-    prec = precision_score(test_y, y_test_pred.round(), average='macro')
-    rec = recall_score(test_y, y_test_pred.round(), average='macro')
-    f1 = f1_score(test_y, y_test_pred.round(), average='macro')
+    print(type(y_test_pred))
+    print(y_test_pred)
+
+    prec = precision_score(test_y, y_test_pred, average='macro')
+    rec = recall_score(test_y, y_test_pred, average='macro')
+    f1 = f1_score(test_y, y_test_pred, average='macro')
     print("Precision:", prec, "\n Recall:", rec, "\n F1-score:", f1)
 
 
