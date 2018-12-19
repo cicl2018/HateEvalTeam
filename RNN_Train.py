@@ -118,7 +118,6 @@ def recurrent_network():
 
     y_test_pred = recurrent_model.predict(test_x)
 
-<<<<<<< HEAD
     test_y_new = []
     for x in test_y:
         x_new = float(x)
@@ -130,11 +129,6 @@ def recurrent_network():
     rec = recall_score(test_y_new, y_test_pred.round(), average='macro')
     f1 = f1_score(test_y_new, y_test_pred.round(), average='macro')
 
-=======
-    prec = precision_score(test_y, y_test_pred.round(), average='macro')
-    rec = recall_score(test_y, y_test_pred.round(), average='macro')
-    f1 = f1_score(test_y, y_test_pred.round(), average='macro')
->>>>>>> a2f85b25f5f21d3f233c6872d0d722760e2cf8c9
     print("Precision:", prec, "\n Recall:", rec, "\n F1-score:", f1)
 
 
