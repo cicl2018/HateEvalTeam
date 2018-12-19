@@ -6,7 +6,9 @@ from keras.models import Sequential
 from keras_preprocessing.sequence import pad_sequences
 from sklearn.metrics import f1_score, precision_score, recall_score
 from sklearn.preprocessing import OneHotEncoder
+import re
 
+filepath='C:\\Users\\Denise\\Documents\\Studium\WS 1819\\Vhallenges WS1819\\HateEvalTeam\\Data Files\\Data Files\\#2 Development-English-A\\dev_en.tsv'
 
 def get_data(file, padding='post'):
     # file = 'C:\\Users\\mihai\\PycharmProjects\\SharedTaskHS\\HateEvalTeam\\Data Files\\Data Files\\#1 Practice\\trial_en.tsv'
@@ -15,11 +17,14 @@ def get_data(file, padding='post'):
     list_of_hateful = list()
     max_length = list()
     counter = 0
+    punctuation='/\,;.:!?$123456789¿¡'
+    table=str.maketrans(dict.fromkeys(punctuation))
 
     with open(file, encoding="utf8") as tsvfile:
         reader = csv.reader(tsvfile, delimiter='\t')
         for row in reader:
-            list_of_sentences.append(row[1])
+            row_cleaned = re.sub("@\S*"," ", row[1].lower().translate(table))
+            list_of_sentences.append(row_cleaned)
             list_of_hateful.append(row[2])
 
     list_of_sentences.pop(0)
@@ -40,6 +45,7 @@ def get_data(file, padding='post'):
             else:
                 alphabet[char] = len(alphabet) + 1
                 words.append(alphabet[char])
+        
 
         train_words.append(words)
 
@@ -70,7 +76,7 @@ def get_data(file, padding='post'):
 
 def recurrent_networks():
     train_x, train_y, test_x, test_y = get_data(
-        file='C:\\Users\\Adham\\Documents\\school\\hateval stuff\\Data Files\\#2 Development-English-A_\\dev_en.tsv',
+        file=filepath,
         padding='post')
     epoch = 10
     dropout = 0.1

@@ -8,7 +8,7 @@ from sklearn.metrics import f1_score, precision_score, recall_score
 import time
 from sklearn.model_selection import StratifiedKFold
 from sklearn.preprocessing import OneHotEncoder
-import keras_metrics
+
 
 
 def get_data(file, padding='post'):
@@ -16,11 +16,14 @@ def get_data(file, padding='post'):
     list_of_hateful = list()
     max_length = list()
     counter = 0
+    punctuation='@/\,;.:!?$123456789¿¡'
+    table=str.maketrans(dict.fromkeys(punctuation))
 
     with open(file, encoding="utf8") as tsvfile:
         reader = csv.reader(tsvfile, delimiter='\t')
         for row in reader:
-            list_of_sentences.append(row[1])
+            row1=row[1].lower()
+            list_of_sentences.append(row1.translate(table))
             list_of_hateful.append(row[2])
 
     list_of_sentences.pop(0)
@@ -44,12 +47,12 @@ def get_data(file, padding='post'):
 
         train_words.append(words)
 
-    train_x = train_words[:500]
-    test_x = train_words[500:]
+    train_x = train_words[:250]
+    test_x = train_words[250:]
 
     list_of_hateful = list(map(int, list_of_hateful[1:]))
-    train_y = list_of_hateful[:500]
-    test_y = list_of_hateful[499:]
+    train_y = list_of_hateful[:250]
+    test_y = list_of_hateful[249:]
 
     train_x = pad_sequences(train_x, padding=padding, value=0, maxlen=longest_sent, truncating='pre')
     test_x = pad_sequences(test_x, padding=padding, value=0, maxlen=longest_sent, truncating='pre')
@@ -70,10 +73,9 @@ def get_data(file, padding='post'):
 
 def recurrent_networks():
     train_x, train_y, test_x, test_y = get_data(
-        file='C:\\Users\\mihai\\PycharmProjects\\SharedTaskHS\\HateEvalTeam\\Data Files\\Data Files\\#2 '
-             'Development-English-A\\dev_en.tsv',
+        file='C:\\Users\\Denise\\Documents\\Studium\WS 1819\\Vhallenges WS1819\\HateEvalTeam\\Data Files\\Data Files\\#2 Development-Spanish-A\\dev_es.tsv',
         padding='post')
-    # epoch = 10
+    epoch = 10
     # dropout = 0.1
 
     # print(type(train_x),type(train_y),type(test_x),type(test_y))
@@ -85,13 +87,18 @@ def recurrent_networks():
     test_y = np.asarray(test_y)
 
     ##### EPOCHS & DROPOUT #####
+<<<<<<< HEAD
     epochs = list(range(1, 8))
     dropout = [0.1, 0.2]
+=======
+    epochs = list(range(1, 11))
+    dropout =  0.2
+>>>>>>> e1d1695c2c146e2217406f49aa656c2e04ce916b
 
     # print(train_x.shape, train_y.shape)
     with open('results_LSTM.txt', 'w') as result_file:
-        for dp in dropout:
             recurrent_model = Sequential()
+<<<<<<< HEAD
             #recurrent_model.add(Embedding(input_dim=train_x.shape[1], output_dim=train_x.shape[1], input_shape=(851,)))
             # recurrent_model.add(Dropout(dropout))
             # recurrent_model.add()
@@ -101,9 +108,16 @@ def recurrent_networks():
             recurrent_model.add(LSTM(units=64, activation='tanh', return_sequences=True))
             #recurrent_model.add(LSTM(units=64, activation='tanh', return_sequences=True))
             recurrent_model.add(Dropout(dp))
+=======
+            recurrent_model.add(LSTM(units=64, return_sequences=True))
+            recurrent_model.add(LSTM(units=64, return_sequences=True))
+            recurrent_model.add(Dropout(0.2))
+            recurrent_model.add(Activation('tanh'))
+>>>>>>> e1d1695c2c146e2217406f49aa656c2e04ce916b
             recurrent_model.add(Flatten())
             recurrent_model.add(Dense(units=1, activation='sigmoid'))
             recurrent_model.compile(optimizer='adam', loss='binary_crossentropy', metrics=['accuracy'])
+            #recurrent_model.fit(train_x, train_y, epochs=epoch)
 
             for epoch in epochs:
                 recurrent_model.fit(train_x, train_y, epochs=epoch)
@@ -114,13 +128,20 @@ def recurrent_networks():
                 rec = recall_score(test_y, y_test_pred.round(), average='macro')
                 f1 = f1_score(test_y, y_test_pred.round(), average='macro')
 
+<<<<<<< HEAD
                 print("Dropout:", dp, "Epoch:", epoch, "F1:", f1)
                 result_file.write("Dropout: " + str(dp) + ' --- ' + 'Epoch: ' + str(epoch) + ' --- ' + 'F1: ' + str(
                     f1) + " --- " + 'Precision:' + str(prec) + '\n')
+=======
+                print("Dropout:", "Epoch:", epoch, "F1:", f1)
+                result_file.write("Dropout: " + ' --- ' + 'Epoch: ' + str(epoch) + ' --- ' + 'F1: ' + str(
+                    f1) + " --- " + 'Score: ' + str(score[1]) + '\n')
+>>>>>>> e1d1695c2c146e2217406f49aa656c2e04ce916b
 
-    # print("Precision:", prec, "\n Recall:", rec, "\n F1-score:", f1)
+    print("Precision:", prec, "\n Recall:", rec, "\n F1-score:", f1)
     result_file.close()
 
+<<<<<<< HEAD
 
 
 time_1 = time.asctime(time.localtime(time.time()))
@@ -320,3 +341,6 @@ recurrent_networks_5()
 
 time_2 = time.asctime(time.localtime(time.time()))
 print(time_1 + '\n' + time_2)
+=======
+recurrent_networks()
+>>>>>>> e1d1695c2c146e2217406f49aa656c2e04ce916b
