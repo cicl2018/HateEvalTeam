@@ -10,10 +10,11 @@ from keras.wrappers.scikit_learn import KerasClassifier
 from keras_preprocessing.sequence import pad_sequences
 from sklearn.metrics import f1_score, precision_score, recall_score, precision_recall_fscore_support
 # from baseline import bong
-from sklearn.model_selection import StratifiedKFold, cross_val_score
+from sklearn.model_selection import StratifiedKFold
 from sklearn.preprocessing import LabelEncoder
+import time
 
-alphabet = dict()
+
 def get_data(train_file, test_file, padding='post'):
     list_of_sentences_train = list()
     list_of_hateful_train = list()
@@ -33,7 +34,7 @@ def get_data(train_file, test_file, padding='post'):
         max_length.append(len(x))
     longest_sent = max(max_length)
 
-
+    alphabet = dict()
     train_words = []
 
     for sent in list_of_sentences_train:
@@ -96,14 +97,16 @@ def get_data(train_file, test_file, padding='post'):
 
 # baseline model
 
+time1 = time.ctime()
 
-
+seed = 7
+np.random.seed(seed)
 
 def recurrent_network():
 
     train_x, train_y, test_x, test_y, max_sent = get_data(
-        train_file='Data/#2 Development-English-A/train_en.tsv',
-        test_file='Data/#2 Development-English-A/dev_en.tsv',
+        train_file='C:\\Users\\mihai\\PycharmProjects\\SharedTaskHS\\HateEvalTeam\\Data Files\\Data Files\\#2 Development-English-A\\train_en.tsv',
+        test_file='C:\\Users\\mihai\\PycharmProjects\\SharedTaskHS\\HateEvalTeam\\Data Files\\Data Files\\#2 Development-English-A\\dev_en.tsv',
         padding='post')
 
     train_x = np.asarray(train_x)
@@ -118,29 +121,47 @@ def recurrent_network():
     test_y = np.asarray(test_y)
     test_y = np.reshape(test_y, (-1, 1))
 
-    recurrent_model = Sequential()
-    recurrent_model.add(Embedding(input_dim=5000, output_dim=28, input_length=max_sent, mask_zero=False))
-    recurrent_model.add(LSTM(units=64, return_sequences=True, recurrent_dropout=0.2))
-    # recurrent_model.add(LSTM(units=64, return_sequences=True, recurrent_dropout=0.2))
-    # recurrent_model.add(Dropout(0.2))
-    recurrent_model.add(Flatten())
+    kfold = StratifiedKFold(n_splits=10, shuffle=True, random_state=seed)
+    cvscores = []
 
-    # recurrent_model.add(Dense(units=50, input_dim=2, activation='relu'))
-    recurrent_model.add(Dense(units=1, activation='sigmoid'))
+    for train, test in kfold.split(train_x, train_y):
+
+        recurrent_model = Sequential()
+        recurrent_model.add(Embedding(input_dim=5000, output_dim=28, input_length=max_sent, mask_zero=False))
+        recurrent_model.add(LSTM(units=64, return_sequences=True, recurrent_dropout=0.1))
+        #recurrent_model.add(LSTM(units=64, return_sequences=True, recurrent_dropout=0.2))
+        # recurrent_model.add(Dropout(0.2))
+        recurrent_model.add(Flatten())
+
+        # recurrent_model.add(Dense(units=50, input_dim=2, activation='relu'))
+        recurrent_model.add(Dense(units=1, activation='sigmoid'))
     
-    recurrent_model.compile(optimizer='Adam', loss='binary_crossentropy', metrics=['accuracy'])
+        recurrent_model.compile(optimizer='adam', loss='binary_crossentropy', metrics=['accuracy'])
 
-    # Set callback functions to early stop training and save the best model so far
-    # es = EarlyStopping(monitor='val_loss' patience=5)
+        # Set callback functions to early stop training and save the best model so far
+        es = EarlyStopping(monitor='val_loss', patience=5)
 
-    # Train neural network
-    # recurrent_model.fit(train_x, train_y, validation_split=0.2, epochs=100, callbacks=[es], batch_size=64)
-    recurrent_model.fit(train_x, train_y, epochs=5, batch_size=64)
-
-    score = recurrent_model.evaluate(test_x, test_y)
-    print('Accuracy:', score[1])
+        # Train neural network
+        # recurrent_model.fit(train_x, train_y, validation_split=0.2, epochs=100, callbacks=[es], batch_size=64)
+        recurrent_model.fit(train_x[train], train_y[train], callbacks=[es], epochs=30, batch_size=128)
+        scores = recurrent_model.evaluate(test_x, test_y)
+        print("%s: %.2f%%" % (recurrent_model.metrics_names[1], scores[1] * 100))
+        cvscores.append(scores[1] * 100)
+    print("%.2f%% (+/- %.2f%%)" % (np.mean(cvscores), np.std(cvscores)))
 
     y_test_pred = recurrent_model.predict(test_x)
+
+    smaller_than = 0.499
+    list_of_numbers = list()
+
+    for y in y_test_pred:
+        #print(int(y))
+        if y <= smaller_than:
+            list_of_numbers.append(int("0"))
+        else:
+            list_of_numbers.append(int("1"))
+
+    #print(list_of_numbers)
 
     test_y_new = []
     for x in test_y:
@@ -152,6 +173,49 @@ def recurrent_network():
     rec = recall_score(test_y_new, y_test_pred.round(), average='macro')
     f1 = f1_score(test_y_new, y_test_pred.round(), average='macro')
 
-    print("Precision:", prec, "\n Recall:", rec, "\n F1-score:", f1)
+    time2 = time.ctime()
 
-recurrent_network()
+    print("Precision:", prec, "\n Recall:", rec, "\n F1-score:", f1)
+    print(time1 + '\n' + time2)
+
+    return y_test_pred
+
+
+def create_file():
+    test_file = 'C:\\Users\\mihai\\PycharmProjects\\SharedTaskHS\\HateEvalTeam\\Data Files\\Data Files\\#2 Development-English-A\\dev_en.tsv'
+    y_test_pred = recurrent_network()
+    ids = list()
+
+    with open(test_file, encoding="utf8") as file_test:
+        reader = csv.reader(file_test, delimiter='\t')
+        for row in reader:
+            ids.append(row[0])
+    ids.pop(0)
+    file_test.close()
+
+    smaller_than = 0.499
+    list_of_numbers = list()
+
+    for y in y_test_pred:
+        print(int(y))
+        if y < smaller_than:
+            list_of_numbers.append(int("0"))
+        else:
+            list_of_numbers.append(int("1"))
+
+    print(list_of_numbers)
+
+    i = 0
+
+    with open('en_a.tsv', 'w') as final_file:
+        #for x in ids, list_of_numbers:
+        while i <= len(ids):
+            #for y in list_of_numbers:
+            final_file.write(str(ids[i]) + "\t" + str(list_of_numbers[i]) + "\n")
+                #print(x, "---", y_new)
+            i += 1
+    final_file.close()
+
+
+#recurrent_network()
+create_file()
