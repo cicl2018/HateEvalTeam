@@ -4,6 +4,7 @@ from keras.callbacks import EarlyStopping
 from keras.layers import Dense, Embedding, LSTM, Flatten
 from keras.models import Sequential
 from keras_preprocessing.sequence import pad_sequences
+import time
 
 
 def get_data(train_file, test_file, padding='post'):
@@ -89,6 +90,9 @@ def get_data(train_file, test_file, padding='post'):
         return train_x, train_y_hateful, train_y_aggressive, train_y_targeted, test_x, longest_sent
 
 
+time1 = time.ctime()
+
+
 def recurrent_network_hateful_eval():
     train_x, train_y_hateful, train_y_aggressive, train_y_targeted, test_x, max_sent = get_data(
         train_file='C:\\Users\\mihai\\PycharmProjects\\SharedTaskHS\\HateEvalTeam\\Data Files\\Data Files\\#2 Development-English-A\\train_dev_en_merged.tsv',
@@ -108,7 +112,7 @@ def recurrent_network_hateful_eval():
     recurrent_model.compile(optimizer='adam', loss='binary_crossentropy', metrics=['accuracy'])
 
     es = EarlyStopping(monitor='val_loss', patience=5)
-    recurrent_model.fit(train_x, train_y, callbacks=[es], epochs=30, batch_size=128)
+    recurrent_model.fit(train_x, train_y, callbacks=[es], epochs=50, batch_size=128)
 
     y_test_pred_hateful = recurrent_model.predict(test_x)
 
@@ -116,6 +120,7 @@ def recurrent_network_hateful_eval():
 
 
 def recurrent_network_aggressive_eval():
+    print("--------------- AGGRESSSIVE -----------------")
     train_x, train_y_hateful, train_y_aggressive, train_y_targeted, test_x, max_sent = get_data(
         train_file='C:\\Users\\mihai\\PycharmProjects\\SharedTaskHS\\HateEvalTeam\\Data Files\\Data Files\\#2 Development-English-A\\train_dev_en_merged.tsv',
         test_file='C:\\Users\\mihai\\PycharmProjects\\SharedTaskHS\\HateEvalTeam\\Data Files\\Data Files\\#3 Evaluation-English-A\\test_en.tsv',
@@ -134,7 +139,7 @@ def recurrent_network_aggressive_eval():
     recurrent_model.compile(optimizer='adam', loss='binary_crossentropy', metrics=['accuracy'])
 
     es = EarlyStopping(monitor='val_loss', patience=5)
-    recurrent_model.fit(train_x, train_y, callbacks=[es], epochs=30, batch_size=128)
+    recurrent_model.fit(train_x, train_y, callbacks=[es], epochs=50, batch_size=128)
 
     y_test_pred_aggressive = recurrent_model.predict(test_x)
 
@@ -142,6 +147,7 @@ def recurrent_network_aggressive_eval():
 
 
 def recurrent_network_targeted_eval():
+    print("----------------- TARGETED ----------------")
     train_x, train_y_hateful, train_y_aggressive, train_y_targeted, test_x, max_sent = get_data(
         train_file='C:\\Users\\mihai\\PycharmProjects\\SharedTaskHS\\HateEvalTeam\\Data Files\\Data Files\\#2 Development-English-A\\train_dev_en_merged.tsv',
         test_file='C:\\Users\\mihai\\PycharmProjects\\SharedTaskHS\\HateEvalTeam\\Data Files\\Data Files\\#3 Evaluation-English-A\\test_en.tsv',
@@ -160,11 +166,12 @@ def recurrent_network_targeted_eval():
     recurrent_model.compile(optimizer='adam', loss='binary_crossentropy', metrics=['accuracy'])
 
     es = EarlyStopping(monitor='val_loss', patience=5)
-    recurrent_model.fit(train_x, train_y, callbacks=[es], epochs=30, batch_size=128)
+    recurrent_model.fit(train_x, train_y, callbacks=[es], epochs=50, batch_size=128)
 
     y_test_pred_targeted = recurrent_model.predict(test_x)
 
     return y_test_pred_targeted
+
 
 def create_file():
     test_file = 'C:\\Users\\mihai\\PycharmProjects\\SharedTaskHS\\HateEvalTeam\\Data Files\\Data Files\\#3 Evaluation-English-A\\test_en.tsv'
@@ -205,15 +212,28 @@ def create_file():
 
     i = 0
 
-    with open('en_b_eval_3.tsv', 'w') as final_file:
+    with open('en_b_comp.tsv', 'w') as final_file:
         while i < len(ids):
             final_file.write(
                 str(ids[i]) + "\t" + str(list_of_numbers_hateful[i]) + "\t" + str(list_of_numbers_aggressive[i])
                 + "\t" + str(list_of_numbers_targeted[i]) + "\n")
             i += 1
+
     final_file.close()
 
-    #with open('en_a_eval_3.tsv', 'w') as final_file:
+    j = 0
+    with open('en_b_cagri.tsv', 'w') as final_file_2:
+        while j < len(ids):
+            final_file_2.write(
+                str(ids[j]) + "\t" + str(list_of_numbers_aggressive[j]) + "\t" + str(list_of_numbers_hateful[j])
+                + "\t" + str(list_of_numbers_targeted[j]) + "\n")
+
+            j += 1
+
+    final_file_2.close()
+
+
+    #with open('en_a.tsv', 'w') as final_file:
         #while i < len(ids):
             #final_file.write(str(ids[i]) + "\t" + str(list_of_numbers_hateful[i]) + "\n")
             #i += 1

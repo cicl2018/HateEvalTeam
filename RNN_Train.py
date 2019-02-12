@@ -111,7 +111,7 @@ def recurrent_network():
     recurrent_model.add(Flatten())
     recurrent_model.add(Dense(units=1, activation='sigmoid'))
     recurrent_model.compile(optimizer='adam', loss='binary_crossentropy', metrics=['accuracy'])
-    recurrent_model.fit(train_x, train_y, epochs=1)
+    recurrent_model.fit(train_x, train_y, epochs=30)
 
     score = recurrent_model.evaluate(test_x, test_y)
     print('Accuracy:', score[1])
@@ -123,7 +123,6 @@ def recurrent_network():
         x_new = float(x)
         x_new = np.asarray(x_new)
         test_y_new.append(x_new)
-
 
     prec = precision_score(test_y_new, y_test_pred.round(), average='macro')
     rec = recall_score(test_y_new, y_test_pred.round(), average='macro')
