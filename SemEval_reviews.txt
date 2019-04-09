@@ -1,0 +1,137 @@
+============================================================================ 
+SemEval 2019 Reviews for Submission #102
+============================================================================ 
+
+Title: TuEval at SemEval-2019 Task 5: LSTM Approach to Hate Speech Detection in English and Spanish
+Authors: Mihai Manolescu, Denise Löfflad, Adham Nasser Mohamed Saber and Masoumeh Moradipour Tari
+============================================================================
+                            REVIEWER #1
+============================================================================
+
+---------------------------------------------------------------------------
+Reviewer's Scores
+---------------------------------------------------------------------------
+                         Appropriateness: Appropriate (most submissions)
+                           Clarity (1-5): 3
+
+Detailed Comments
+---------------------------------------------------------------------------
+The paper describes a system for the HatEval shared task that uses minimalistic 1-to-2 layer LSTMs to identify hate speech. The authors describe most aspects of the models used in detail, making it pretty replicable. The paper is structured nicely and is well written too.
+
+My concerns with the paper are the following:
+- What do you mean by a "character based representation of all data"? Did you simply treat every tweet as a giant sequence of characters and passed it as a sequence to an LSTM? I think that was not explained very clearly in the paper.
+- Although the authors do mention the rankings obtained by their best performing systems in the paper, they do not directly compare them with other systems submitted to the shared task. I think this would help readers truly gauge the effectiveness of the approach.
+- It would also be nice to see an analysis on the output produced by the best performing model to see what are its main strenghts and weaknesses. You could dilute the related work sections throughout the other sections to make room for that.
+---------------------------------------------------------------------------
+
+
+
+============================================================================
+                            REVIEWER #2
+============================================================================
+
+---------------------------------------------------------------------------
+Reviewer's Scores
+---------------------------------------------------------------------------
+                         Appropriateness: Appropriate (most submissions)
+                           Clarity (1-5): 5
+
+Detailed Comments
+---------------------------------------------------------------------------
+The paper proposes a simple LSTM architecture (standard LSTM) that is able to identify abuse and the targets in both English and Spanish. The authors perform experiments with the variants of the LSTM architecture.
+
+- Task A was hate speech detection against immigrants and women, a binary classification problem where a tweet was classified as either hateful or not hateful.
+- Task B was determining whether a given tweet was aggressive and whether it was targeting an individual, or not referring to any particular person.
+ 
+
+Strengths
+======================================
+- Paper is easy to follow and provides detailed explaination everywhere helpful even for novice readers.
+ 
+
+Weaknesses
+======================================
+- The contribution by the authors is limited and there is not much novelty in the proposed methods. The authors should have performed extensive experimentations using different architectures.
+- Paper does address the recent prominent works in hate speech domain. Specifically, a lot of additional papers from top-conferences need to be considered. (https://scholar.google.co.in/scholar?q=hate+speech+detection&hl=en&as_sdt=0%2C5&as_ylo=2017&as_yhi=2019)
+- The authors should experiment more with varied architectures and try to bring in novelty in either the architecture of the approach which improves the performance of the system.
+---------------------------------------------------------------------------
+
+
+
+============================================================================
+                            REVIEWER #3
+============================================================================
+
+---------------------------------------------------------------------------
+Reviewer's Scores
+---------------------------------------------------------------------------
+                         Appropriateness: Appropriate (most submissions)
+                           Clarity (1-5): 4
+
+Detailed Comments
+---------------------------------------------------------------------------
+The paper presents the submission of the team TuEval to the SemEval 2019 Task 5: Multilingual Detection of Hate (Subtasks A and B). 
+The paper has grammar and language issues, which need to be addressed. Moreover, several issues should be solved:
+
+-In Section 2, the authors claim that few works attempted to recognize hate speech for the Spanish language. The authors should consider the Tasks presented in the Third Workshop on Evaluation of Human Language Technologies for Iberian Languages (IberEval 2018).
+
+Álvarez-Carmona, Miguel Á., et al. "Overview of MEX-A3T at IberEval 2018: Authorship and aggressiveness analysis in Mexican Spanish tweets." Notebook Papers of 3rd SEPLN Workshop on Evaluation of Human Language Technologies for Iberian Languages (IBEREVAL), Seville, Spain. Vol. 6. 2018.
+
+Fersini, Elisabetta, Maria Anzovino, and Paolo Rosso. "Overview of the task on automatic misogyny identification at ibereval." Proceedings of the Third Workshop on Evaluation of Human Language Technologies for Iberian Languages (IberEval 2018), co-located with 34th Conference of the Spanish Society for Natural Language Processing (SEPLN 2018). CEUR Workshop Proceedings. CEUR-WS. org, Seville, Spain. 2018.
+
+
+-The proposed models are not clearly explained: details about the dimensions of the 2-layer LSTM are not given, details given at the beginning of Section 3.2 are not clearly associated with the presented models. 
+
+-As long that the problem that you encountered with Spanish data are not described (or ar purely technical problems), it is not valuable mentioning it.
+
+-The reference of the Overview should be correctly reported in the References
+
+@inproceedings{hateval2019semeval,
+  title={SemEval-2019 Task 5: Multilingual Detection of Hate Speech Against Immigrants and Women in Twitter},
+  author={Basile, Valerio and Bosco, Cristina and Fersini, Elisabetta and Nozza, Debora and Patti, Viviana and Rangel, Francisco and Rosso, Paolo and Sanguinetti, Manuela},
+  booktitle={Proceedings of the 13th International Workshop on Semantic Evaluation (SemEval-2019)},
+  year={2019},
+  publisher = "Association for Computational Linguistics",
+  location = "Minneapolis, Minnesota"
+}
+
+
+
+
+
+
+
+
+Minor comments
+
+-The word Subtask should be written as “Subtask” and not as “task”
+
+-The measure F1 should be written as macro-F1 if you are considering its macro-averaged version as the task did
+
+-twitter -> Twitter
+
+-Abstract: Twitter datasets -> Twitter posts
+
+-Sec. 1: create conflicts -> creating conflicts
+
+-Sec. 1: “In order to make social media more comfortable … needs to be detected and removed”. This sentence is too long and not clear, please rephrase it.
+
+-Sec. 1: please use the simple present tense when describing the Task. For example, Subtask A regards the hate speech.
+
+-Sec. 1: was done using -> is evaluated on 
+
+-Figure 1 and 2: example for -> example of
+
+-Sec 3: preimplemented Keras models -> using the Keras library
+
+-Sec 3.1: is it correct that you substitute “ñ” with “n,”. Why do you expect this to improve your results?
+
+-Sec 4: our personal evaluations -> our evaluations
+
+-Sec 4: What do you mean with “average results”? On which set are computed the results in Table 2?
+
+-Sec 5:  or hashtag could also improve ->  or hashtag could have also improved
+
+-The citation format should be coherent and correctly reported. For example, 
+Shervin Malmasi and Marcos Zampieri, Detecting Hate Speech in Social Media. Proceedings of the International Conference Recent Advances in Natural Language Processing, RANLP 2017
+---------------------------------------------------------------------------
